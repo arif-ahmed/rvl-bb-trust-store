@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(curl -s -i http://localhost:5099/trust-store/institutions/000085/public-key)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" -X PUT http://localhost:5099/trust-store/institutions/000085/public-key -H \"Content-Type: application/json\" -d '{\"\"\"\"publicKeyPem\"\"\"\":\"\"\"\"-----BEGIN PUBLIC KEY-----\\\\nMCowBQYDK2VwAyEApFE0zdEgSE5+swg6LPirjGER71myqQXVWFHR4t5kX3I=\\\\n-----END PUBLIC KEY-----\"\"\"\",\"\"\"\"institutionName\"\"\"\":\"\"\"\"Dhaka Bank PLC\"\"\"\",\"\"\"\"instituteType\"\"\"\":\"\"\"\"00\"\"\"\"}')",
+      "Bash(curl -s -i -X PUT http://localhost:5099/trust-store/institutions/000085/public-key -H \"Content-Type: application/json\" -d '{\"\"\"\"publicKeyPem\"\"\"\":\"\"\"\"-----BEGIN PUBLIC KEY-----\\\\nMCowBQYDK2VwAyEApFE0zdEgSE5+swg6LPirjGER71myqQXVWFHR4t5kX3I=\\\\n-----END PUBLIC KEY-----\"\"\"\",\"\"\"\"institutionName\"\"\"\":\"\"\"\"Dhaka Bank PLC\"\"\"\",\"\"\"\"instituteType\"\"\"\":\"\"\"\"03\"\"\"\"}')",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" -X PUT http://localhost:5099/trust-store/institutions/000099/public-key -H \"Content-Type: application/json\" -d '{\"\"\"\"publicKeyPem\"\"\"\":\"\"\"\"-----BEGIN PUBLIC KEY-----\\\\nMCowBQYDK2VwAyEApFE0zdEgSE5+swg6LPirjGER71myqQXVWFHR4t5kX3I=\\\\n-----END PUBLIC KEY-----\"\"\"\",\"\"\"\"institutionName\"\"\"\":\"\"\"\"Test Bank No Prefix\"\"\"\"}')"
     ]
   }
 }
