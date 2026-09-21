@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    BB.TrustStoreMock — standalone simulation of the Bangladesh Bank trust
+    store described in docs/bb-banglaqr-p2p-specification.md Annex B. BB
+    has not published a real contract; this is OUR best guess, derived from
+    the spec's own language ("retrieve the public key file ... using
+    Institution_ID"). InstitutionTrust's HttpTrustStoreClient talks to
+    whichever base URL TrustStore:BaseUrl points at — this project today,
+    the real BB endpoint later. Deliberately NOT referenced by SBQR.Api or
+    wired into IModule discovery: it simulates an external system, not a
+    module of this platform.
+
+    Persists uploaded public keys in its OWN disposable PostgreSQL database
+    (bb_trust_store_mock — see Persistence/TrustStoreDbContext). The
+    database is dev/test-only and is dropped together with this project
+    when the real BB trust store lands.
+  -->
+
+  <PropertyGroup>
+    <!-- net10.0 matches the Dockerfile (mcr.microsoft.com/dotnet/sdk:10.0 +
+         mcr.microsoft.com/dotnet/aspnet:10.0). The original csproj relied on
+         a Directory.Build.props to set TargetFramework — that file does
+         not exist in this standalone repo, so we declare it explicitly. -->
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>BB.TrustStoreMock</RootNamespace>
+    <AssemblyName>BB.TrustStoreMock</AssemblyName>
+    <UserSecretsId>bb-trust-store-mock-secrets</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- BouncyCastle: Ed25519 SPKI PEM parsing for upload validation (the
+         same package used across the platform's crypto paths).
+         FluentValidation: input rules on the admin upload DTO (A6 style —
+         mirrors the module-side validators).
+         EF Core + Npgsql: persistence into bb_trust_store_mock.
+         Microsoft.AspNetCore.App comes implicitly via the Web SDK. -->
+    <PackageReference Include="BouncyCastle.Cryptography">
+      <Version>2.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="FluentValidation">
+      <Version>12.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions">
+      <Version>12.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi">
+      <Version>10.0.12</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore">
+      <Version>10.0.12</Version>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Scalar.AspNetCore">
+      <Version>2.17.6</Version>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

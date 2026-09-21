@@ -1,0 +1,38 @@
+# Render Blueprint — provisions a free web service for the
+# BB.TrustStoreMock dev/test mock. Database is NOT provisioned by Render:
+# the service connects to an external Neon Postgres whose connection string
+# is baked into this file as ConnectionStrings__bb_trust_store_mock.
+#
+# Apply via Render dashboard → New → Blueprint → point at this repo.
+#
+# Caveats (intentional for a disposable mock):
+# - Free web service sleeps after 15 min idle (~30s cold start).
+# - This file contains a DATABASE PASSWORD in plaintext. Treat the repo as
+#   a secret holder: do not push to a public remote without first rotating
+#   the Neon password and switching to a Render Secret File / env-var group.
+# - Both web services pinned to oregon — kept consistent with prior config.
+services:
+  - type: web
+    name: bb-truststoremock
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    rootDir: src/BB.TrustStoreMock
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
+      - key: ASPNETCORE_ENVIRONMENT
+        # Production is intentionally NOT used here even on Render:
+        # Program.cs throws InvalidOperationException when
+        # builder.Environment.IsProduction() — that guard is for real
+        # BB-trust-store-shaped production deploys, which is exactly
+        # what Render is NOT (it hosts this disposable mock).
+        value: Staging
+      - key: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+        value: "true"
+      - key: ConnectionStrings__bb_trust_store_mock
+        value: "Host=ep-orange-rain-b3rdohqa-pooler.c-4.ap-southeast-1.aws.neon.tech;Port=5432;Database=neondb;Username=neondb_owner;Password=npg_per1VGnX6Iqy;SslMode=Require;Channel Binding=Require;Include Error Detail=true"

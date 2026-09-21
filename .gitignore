@@ -427,3 +427,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Local per-developer secrets (Neon DB connection string, etc.).
+# Tracked appsettings.json is kept non-secret; this Development override
+# is gitignored so the password never enters the repo on a local machine.
+src/BB.TrustStoreMock/appsettings.Development.json
